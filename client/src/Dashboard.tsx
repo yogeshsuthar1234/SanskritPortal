@@ -12,7 +12,10 @@ const ShivaCircles = () => {
   const [isRotationPaused, setIsRotationPaused] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const radius = 200;
+  
+  // Ellipse dimensions
+  const radiusX = 380;  // Horizontal radius
+  const radiusY = 280;  // Vertical radius
   const animationDuration = 25;
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const ShivaCircles = () => {
         controls={false}
       >
         <source src={shivaVideo} type="video/mp4" />
-        Your browser does not support the video tag. sorry !!
+        Your browser does not support the video tag.
       </video>
     );
   }
@@ -81,15 +84,18 @@ const ShivaCircles = () => {
       >
         {SanskritTerms.map((term, index) => {
           const angle = (360 / SanskritTerms.length) * index;
+          const radian = angle * (Math.PI / 180);
+          const x = radiusX * Math.cos(radian);
+          const y = radiusY * Math.sin(radian);
+          
           return (
             <div
               key={term}
               style={{
                 ...styles.circle,
                 transform: `
-                  rotate(${angle}deg) 
-                  translate(${radius}px) 
-                  rotate(-${angle}deg)
+                  translate(${x}px, ${y}px)
+                  rotate(${-angle}deg)
                 `,
                 ...(loaded ? styles.circleVisible : {})
               }}
@@ -128,10 +134,6 @@ const ShivaCircles = () => {
             50% { filter: drop-shadow(0 0 25px rgba(255,140,0,0.9)); }
             100% { filter: drop-shadow(0 0 15px rgba(255,215,0,0.8)); }
           }
-          @keyframes slideUp {
-            from { transform: translateY(100vh) scale(0.5); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-          }
         `}
       </style>
     </div>
@@ -168,9 +170,12 @@ const styles = {
   } as React.CSSProperties,
   rotator: {
     position: 'absolute',
-    width: '50px',
-    height: '50px',
+    width: `${2 * 380}px`,
+    height: `${2 * 280}px`,
     transformOrigin: 'center center',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
   } as React.CSSProperties,
   circle: {
     position: 'absolute',
@@ -199,7 +204,6 @@ const styles = {
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.2s',
   } as React.CSSProperties,
   textContainer: {
-    transform: 'rotate(45deg)',
     textAlign: 'center' as const,
   },
   sanskritText: {
@@ -209,7 +213,6 @@ const styles = {
     textTransform: 'uppercase' as const,
     letterSpacing: '2px',
     textShadow: '0 2px 4px rgba(255,215,0,0.5)',
-    transform: 'rotate(-45deg)',
     whiteSpace: 'nowrap',
   },
   imageContainer: {
@@ -224,9 +227,9 @@ const styles = {
     transform: 'translateY(0) scale(1)',
   } as React.CSSProperties,
   centerImage: {
-    width: '300px',
-    height: '300px',
-    borderRadius: '50%',
+    width: '750px',
+    height: '500px',
+    borderRadius: '375px / 250px',  // Elliptical shape
     objectFit: 'cover' as const,
     border: '4px solid rgba(255,215,0,0.9)',
     filter: 'drop-shadow(0 0 30px rgba(255,215,0,0.6))',
