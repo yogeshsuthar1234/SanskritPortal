@@ -65,7 +65,7 @@ const ShivaCircles = () => {
         controls={false}
       >
         <source src={shivaVideo} type="video/mp4" />
-        Your browser does not support the video tag.
+        Your browser does not support the video tag. sorry !!
       </video>
     );
   }
